@@ -1,0 +1,9 @@
+Revision history for Perl extension Linux::Taskstats::Read.
+
+3.01  Tue Apr 17 16:23:46 MDT 2007
+        - public release
+
+0.01  Tue Apr 17 13:29:27 2007
+	- original version; created by h2xs 1.23 with options
+		-AX Linux::Taskstats::Read
+
