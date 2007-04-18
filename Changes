@@ -1,5 +1,8 @@
 Revision history for Perl extension Linux::Taskstats::Read.
 
+3.02  Wed Apr 18 16:23:29 MDT 2007
+        - added fields(), version() methods
+
 3.01  Tue Apr 17 16:23:46 MDT 2007
         - public release
 

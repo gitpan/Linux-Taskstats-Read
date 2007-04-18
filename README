@@ -1,4 +1,4 @@
-Linux-Taskstats-Read version 0.01
+Linux-Taskstats-Read version 3.02
 =================================
 
 This module reads a taskstats struct and puts it into a lovely hashref
@@ -35,5 +35,3 @@ Copyright (C) 2007 by Bluehost, Inc.
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.6 or,
 at your option, any later version of Perl 5 you may have available.
-
-

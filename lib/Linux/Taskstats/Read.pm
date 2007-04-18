@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Fcntl qw(O_RDONLY);
 
-our $VERSION = '3.01';
+our $VERSION = '3.02';
 
 ## these are object members (and need to be cleaned up in DESTROY())
 my %Fh  = ();
@@ -83,6 +83,14 @@ sub read {
 sub close {
     CORE::close($Fh{$_[0]}) if $Fh{$_[0]};
     delete $Fh{$_[0]};
+}
+
+sub version {
+    return $Ver{$_[0]};
+}
+
+sub fields {
+    return @{ $Fields{$Ver{$_[0]}} };
 }
 
 sub DESTROY {
@@ -166,6 +174,23 @@ you've closed the object's filehandle (via B<close()>), you can
 Example:
 
   $ts->open('/path/to/some/file.log');
+
+=head2 fields()
+
+Returns a list containing all of the fields of the taskstats structure
+in the order they appear in F<taskstats.h>.
+
+Example:
+
+  my @fields = $ts->fields;
+
+=head2 version()
+
+Returns the taskstats version this object is currently set to parse.
+
+Example:
+
+  print $ts->version . "\n";
 
 =head1 TASKSTATS STRUCT
 
