@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Fcntl qw(O_RDONLY);
 
-our $VERSION = '3.02';
+our $VERSION = '3.03';
 
 ## these are object members (and need to be cleaned up in DESTROY())
 my %Fh  = ();

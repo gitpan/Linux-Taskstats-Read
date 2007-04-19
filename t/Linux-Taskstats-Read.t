@@ -18,8 +18,15 @@ is( $fields[2], "ac_flag", "field member" );
 
 $ts->open($file);
 
-my %comm = ();
-my $rec = $ts->read;
-$ts->close;
+eval { my $q = unpack("Q", 1234123412341234) };
+my $can_Q = ( $@ ? 0 : 1 );
 
-is( $rec->{ac_comm}, 'grep', "groked comm" );
+SKIP: {
+    skip("64-bit architecture required", 1) unless $can_Q;
+
+    my %comm = ();
+    my $rec = $ts->read;
+    $ts->close;
+
+    is( $rec->{ac_comm}, 'grep', "groked comm" );
+}
