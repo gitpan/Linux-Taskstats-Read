@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 7;
 BEGIN { use_ok('Linux::Taskstats::Read') };
 
 #########################
@@ -16,7 +16,12 @@ my @fields = $ts->fields;
 is( scalar(@fields), 36, "field count" );
 is( $fields[2], "ac_flag", "field member" );
 
+like( $ts->template, qr(QQQQQQ$), "template read" );
+
 $ts->open($file);
+
+my $rec_raw = $ts->read_raw;
+is( length($rec_raw), $ts->size, "size of raw record" );
 
 eval { my $q = unpack("Q", 1234123412341234) };
 my $can_Q = ( $@ ? 0 : 1 );

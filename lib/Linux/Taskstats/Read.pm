@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Fcntl qw(O_RDONLY);
 
-our $VERSION = '3.03';
+our $VERSION = '3.04';
 
 ## these are object members (and need to be cleaned up in DESTROY())
 my %Fh  = ();
@@ -80,6 +80,15 @@ sub read {
     return \%rec;
 }
 
+sub read_raw {
+    my $self = shift;
+
+    sysread($Fh{$self}, my $rec, $Size{$Ver{$self}}, 0)
+      or return;
+
+    return $rec;
+}
+
 sub close {
     CORE::close($Fh{$_[0]}) if $Fh{$_[0]};
     delete $Fh{$_[0]};
@@ -89,8 +98,16 @@ sub version {
     return $Ver{$_[0]};
 }
 
+sub size {
+    return $Size{$Ver{$_[0]}};
+}
+
 sub fields {
     return @{ $Fields{$Ver{$_[0]}} };
+}
+
+sub template {
+    return $Tmpl{$Ver{$_[0]}};
 }
 
 sub DESTROY {
@@ -156,6 +173,10 @@ constructor (B<new()>) or B<open()>.
 
   my $rec = $ts->read;
 
+=head2 read_raw()
+
+Returns a raw (packed) taststats structure.
+
 =head2 close()
 
 When you're done reading what you need from the taststats dump, kindly
@@ -183,6 +204,23 @@ in the order they appear in F<taskstats.h>.
 Example:
 
   my @fields = $ts->fields;
+
+=head2 size()
+
+Returns the record size in bytes for the current taskstats version.
+
+Example:
+
+  my $size = $ts->size;
+
+=head2 template()
+
+Returns the template for unpack() for this taskstats version.
+
+Example:
+
+  my $rec = $ts->read_raw;
+  @data = unpack($ts->template, $rec);
 
 =head2 version()
 

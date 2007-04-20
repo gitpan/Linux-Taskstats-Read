@@ -1,5 +1,12 @@
 Revision history for Perl extension Linux::Taskstats::Read.
 
+3.04  Fri Apr 20 11:07:05 MDT 2007
+        - add read_raw(), size(), template() methods
+
+3.03  Thu Apr 19 10:15:36 MDT 2007
+        - no module changes, only changes to Makefile.PL and tests to
+          check for 64-bit architectures
+
 3.02  Wed Apr 18 16:23:29 MDT 2007
         - added fields(), version() methods
 
