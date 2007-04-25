@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Fcntl qw(O_RDONLY);
 
-our $VERSION = '3.04';
+our $VERSION = '3.05';
 
 ## these are object members (and need to be cleaned up in DESTROY())
 my %Fh  = ();
@@ -13,7 +13,7 @@ my %Ver = ();
 
 ## taskstats template: the 'x' padding may not be entirely accurate
 my %Size   = ( 3 => 268 );
-my %Tmpl   = ( 3 => 'S x!4 L C x!4 C x!4 QQQQQQQQ a32 C C x!4 LLLLL QQQQQQQQQQQQQQQQ' );
+my %Tmpl   = ( 3 => 'S x![L] L C C x![Q] QQQQQQQQ a32 C C x![L] LLLLL QQQQQQQQQQQQQQQQ' );
 my %Fields = ( 3 => [ qw(version     ac_exitcode
                          ac_flag     ac_nice
 

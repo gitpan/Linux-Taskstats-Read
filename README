@@ -1,4 +1,4 @@
-Linux-Taskstats-Read version 3.04
+Linux-Taskstats-Read version 3.05
 =================================
 
 This module reads a taskstats struct and puts it into a lovely hashref

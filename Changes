@@ -1,5 +1,8 @@
 Revision history for Perl extension Linux::Taskstats::Read.
 
+3.05  Wed Apr 25 13:14:00 MDT 2007
+        - fix alignment in cpu accounting section
+
 3.04  Fri Apr 20 11:07:05 MDT 2007
         - add read_raw(), size(), template() methods
 
