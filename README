@@ -1,10 +1,10 @@
-Linux-Taskstats-Read version 3.05
+Linux-Taskstats-Read version 4.00
 =================================
 
 This module reads a taskstats struct and puts it into a lovely hashref
 for you to do whatever you want with it.
 
-  my $ts = new Linux::Taskstats::Read( -file => '/some/taskstats.log', -ver => 3 );
+  my $ts = new Linux::Taskstats::Read( -file => '/some/taskstats.log', -ver => 4 );
   my $rec = $ts->read;
   $ts->close;
   print "Process name: " . $rec->{ac_comm} . "\n";

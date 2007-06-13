@@ -2,7 +2,8 @@ Changes
 Makefile.PL
 MANIFEST
 README
-t/junk01
+t/ver3.dump
+t/ver4.dump
 t/Linux-Taskstats-Read.t
 lib/Linux/Taskstats/Read.pm
 META.yml                                 Module meta-data (added by MakeMaker)

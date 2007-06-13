@@ -5,38 +5,46 @@ use strict;
 use warnings;
 use Fcntl qw(O_RDONLY);
 
-our $VERSION = '3.05';
+our $VERSION = '4.00';
 
 ## these are object members (and need to be cleaned up in DESTROY())
 my %Fh  = ();
 my %Ver = ();
 
+my %Size   = ( 3 => 268,
+               4 => 276, );
+
 ## taskstats template: the 'x' padding may not be entirely accurate
-my %Size   = ( 3 => 268 );
-my %Tmpl   = ( 3 => 'S x![L] L C C x![Q] QQQQQQQQ a32 C C x![L] LLLLL QQQQQQQQQQQQQQQQ' );
-my %Fields = ( 3 => [ qw(version     ac_exitcode
-                         ac_flag     ac_nice
+my %Tmpl   = ();
+$Tmpl{3} = 'S x![L] L C C x![Q] QQQQQQQQ a32 C C x![L] LLLLL QQQQQQQQQQQQQQQQ';
+$Tmpl{4} = $Tmpl{3};
 
-                         cpu_count            cpu_delay_total
-                         blkio_count          blkio_delay_total
-                         swapin_count         swapin_delay_total
-                         cpu_run_real_total   cpu_run_virtual_total
+my %Fields = ();
 
-                         ac_comm
+$Fields{3} = [ qw(version     ac_exitcode
+                  ac_flag     ac_nice
 
-                         ac_sched
-                         ac_pad
+                  cpu_count            cpu_delay_total
+                  blkio_count          blkio_delay_total
+                  swapin_count         swapin_delay_total
+                  cpu_run_real_total   cpu_run_virtual_total
 
-                         ac_uid       ac_gid
-                         ac_pid       ac_ppid
-                         ac_btime
+                  ac_comm
 
-                         ac_etime      ac_utime     ac_stime
-                         ac_minflt     ac_majflt
+                  ac_sched
+                  ac_pad
 
-                         coremem       virtmem      hiwater_rss     hiwater_vm
-                         read_char     write_char   read_syscalls   write_syscalls
-                         read_bytes    write_bytes  cancelled_write_bytes) ] );
+                  ac_uid       ac_gid
+                  ac_pid       ac_ppid
+                  ac_btime
+
+                  ac_etime      ac_utime     ac_stime
+                  ac_minflt     ac_majflt
+
+                  coremem       virtmem      hiwater_rss     hiwater_vm
+                  read_char     write_char   read_syscalls   write_syscalls
+                  read_bytes    write_bytes  cancelled_write_bytes) ];
+$Fields{4} = $Fields{3};
 
 sub new {
     my $class = shift;
