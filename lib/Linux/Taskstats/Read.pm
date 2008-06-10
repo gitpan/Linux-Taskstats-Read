@@ -5,19 +5,20 @@ use strict;
 use warnings;
 use Fcntl qw(O_RDONLY);
 
-our $VERSION = '4.00';
+our $VERSION = '6.01';
 
 ## these are object members (and need to be cleaned up in DESTROY())
 my %Fh  = ();
 my %Ver = ();
 
 my %Size   = ( 3 => 268,
-               4 => 276, );
+               4 => 276,
+               6 => 316, );
 
-## taskstats template: the 'x' padding may not be entirely accurate
 my %Tmpl   = ();
-$Tmpl{3} = 'S x![L] L C C x![Q] QQQQQQQQ a32 C C x![L] LLLLL QQQQQQQQQQQQQQQQ';
+$Tmpl{3} = 'S xx L C C xxxxxx QQQQQQQQ a32 C C xx xxxx LLLLL xxxx QQQQQQQQQQQQQQQQ';
 $Tmpl{4} = $Tmpl{3};
+$Tmpl{6} = $Tmpl{3} . 'QQQQQ';
 
 my %Fields = ();
 
@@ -45,6 +46,9 @@ $Fields{3} = [ qw(version     ac_exitcode
                   read_char     write_char   read_syscalls   write_syscalls
                   read_bytes    write_bytes  cancelled_write_bytes) ];
 $Fields{4} = $Fields{3};
+@{$Fields{6}} = (@{$Fields{3}}, qw(nvcsw nivcsw
+                                   ac_utimescaled ac_stimescaled
+                                   cpu_scaled_run_real_total));
 
 sub new {
     my $class = shift;

@@ -1,4 +1,4 @@
-Linux-Taskstats-Read version 4.00
+Linux-Taskstats-Read version 6.01
 =================================
 
 This module reads a taskstats struct and puts it into a lovely hashref
@@ -24,7 +24,8 @@ To install this module type the following:
 DEPENDENCIES
 
 Requires a 64-bit machine architecture for quad ('Q') template support
-in unpack().
+in unpack(). You should probably also make sure the 'reader' machine
+has the same endian-ness as the machine producing the dump files.
 
 COPYRIGHT AND LICENCE
 
