@@ -5,6 +5,10 @@ README
 t/ver3.dump
 t/ver4.dump
 t/ver6.dump
-t/Linux-Taskstats-Read.t
+t/ver7.dump
+t/00_load.t
+t/10_quad.t
+t/20_explicit.t
+t/30_autodetect.t
 lib/Linux/Taskstats/Read.pm
 META.yml                                 Module meta-data (added by MakeMaker)

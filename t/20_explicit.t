@@ -1,4 +1,4 @@
-use Test::More tests => 9;
+use Test::More tests => 10;
 BEGIN { use_ok('Linux::Taskstats::Read') };
 
 #########################
@@ -6,10 +6,12 @@ BEGIN { use_ok('Linux::Taskstats::Read') };
 my $file_v3 = 'ver3.dump';
 my $file_v4 = 'ver4.dump';
 my $file_v6 = 'ver6.dump';
+my $file_v7 = 'ver7.dump';
 if( -d 't' ) {
     $file_v3 = 't/' . $file_v3;
     $file_v4 = 't/' . $file_v4;
     $file_v6 = 't/' . $file_v6;
+    $file_v7 = 't/' . $file_v7;
 }
 
 my $ts = new Linux::Taskstats::Read( -ver => 3 );
@@ -31,14 +33,12 @@ eval { my $q = unpack("Q", 1234123412341234) };
 my $can_Q = ( $@ ? 0 : 1 );
 
 SKIP: {
-    skip("64-bit architecture required", 3) unless $can_Q;
+    skip("64-bit architecture required", 4) unless $can_Q;
 
-    my %comm = ();
     my $rec = $ts->read;
     $ts->close;
 
-    is( $rec->{ac_comm}, 'grep', "groked comm" );
-
+    is( $rec->{ac_comm}, 'grep', "v3 groked comm" );
 
     ## try v4 record
     undef $ts;
@@ -51,7 +51,7 @@ SKIP: {
     $rec = $ts->read;
     $ts->close;
 
-    is( $rec->{ac_comm}, 'php', "groked v4 comm" );
+    is( $rec->{ac_comm}, 'php', "v4 groked comm" );
 
 
     ## try v6 record
@@ -62,5 +62,15 @@ SKIP: {
     while( my $trec = $ts->read ) { $rec = $trec }  ## find last record                                               
     $ts->close;
 
-    is( $rec->{ac_comm}, 'perl', "groked v6 comm" );
+    is( $rec->{ac_comm}, 'perl', "v6 groked comm" );
+
+    ## try v7 record
+    undef $ts;
+    $ts = new Linux::Taskstats::Read( -ver => 7 );
+    $ts->open($file_v7);
+
+    while( my $trec = $ts->read ) { $rec = $trec }  ## find last record                                               
+    $ts->close;
+
+    is( $rec->{ac_comm}, 'php5', "v7 groked comm" );
 }

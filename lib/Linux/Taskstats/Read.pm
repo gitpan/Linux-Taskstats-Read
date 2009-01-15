@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Fcntl qw(O_RDONLY);
 
-our $VERSION = '6.01';
+our $VERSION = '7.00';
 
 ## these are object members (and need to be cleaned up in DESTROY())
 my %Fh  = ();
@@ -13,12 +13,15 @@ my %Ver = ();
 
 my %Size   = ( 3 => 268,
                4 => 276,
-               6 => 316, );
+               6 => 316,
+               7 => 332,
+);
 
 my %Tmpl   = ();
 $Tmpl{3} = 'S xx L C C xxxxxx QQQQQQQQ a32 C C xx xxxx LLLLL xxxx QQQQQQQQQQQQQQQQ';
 $Tmpl{4} = $Tmpl{3};
-$Tmpl{6} = $Tmpl{3} . 'QQQQQ';
+$Tmpl{6} = $Tmpl{3} . ' QQQQQ';
+$Tmpl{7} = $Tmpl{6} . ' QQ';
 
 my %Fields = ();
 
@@ -49,14 +52,14 @@ $Fields{4} = $Fields{3};
 @{$Fields{6}} = (@{$Fields{3}}, qw(nvcsw nivcsw
                                    ac_utimescaled ac_stimescaled
                                    cpu_scaled_run_real_total));
+@{$Fields{7}} = (@{$Fields{6}}, qw(freepages_count freepages_delay_total));
 
 sub new {
     my $class = shift;
     my %args = @_;
     my $self = bless \(my $fake), $class;  ## an inside-out module
 
-    $Ver{$self} = ($args{'-ver'} || $args{'-version'})
-      or die "'-version' parameter required\n";
+    $Ver{$self} = $args{'-ver'} || $args{'-version'} || 0;
 
     $self->open($args{'-file'}) if $args{'-file'};
 
@@ -79,15 +82,13 @@ sub open {
 
 sub read {
     my $self = shift;
-
-    sysread($Fh{$self}, my $rec, $Size{$Ver{$self}}, 0)
-      or return;
-
+    my $rec = $self->read_raw or return;
     my %rec = ();
     @rec{@{$Fields{$Ver{$self}}}} = unpack($Tmpl{$Ver{$self}}, $rec);
 
     ## some cleaning
     $rec{ac_comm} =~ s/\0//g;
+    warn "Version mismatch [$Ver{$self}] != [$rec{version}]\n" if $Ver{$self} != $rec{version};
 
     return \%rec;
 }
@@ -95,7 +96,25 @@ sub read {
 sub read_raw {
     my $self = shift;
 
-    sysread($Fh{$self}, my $rec, $Size{$Ver{$self}}, 0)
+    my $rec = "";
+    my $bytes = 0;
+    my $version = $Ver{$self};
+    if ($version) {
+        $bytes = $Size{$version};
+    } else {
+        # Tear off the first short (16 bits) to autodetect the version
+        # in order to know how much more to read after that.
+        sysread($Fh{$self}, $rec, 2, 0)
+            or return;
+        $version = $Ver{$self} = unpack "S", $rec;
+        if (!$Size{$version}) {
+            ($version) = reverse sort {$a <=> $b} keys %Size;
+            warn "Unimplemented version [$Ver{$self}] detected! Falling back to version [$version] ...";
+            $Ver{$self} = $version;
+        }
+        $bytes = $Size{$version} - 2;
+    }
+    sysread($Fh{$self}, $rec, $bytes, length $rec)
       or return;
 
     return $rec;
@@ -171,9 +190,9 @@ taskstats objects (e.g. such as produced by F<getdelays>).
 
 =item B<-ver>
 
-Specifies the taskstats struct version. This is a required
-parameter. Try '3' if you don't know what version to use. Otherwise,
-look near the top of F<linux/taskstats.h> to see your kernel's current
+Specifies the taskstats struct version. It will try to automatically
+detect the version from the packet on the first read() call.
+Look near the top of F<linux/taskstats.h> to see your kernel's current
 version.
 
 =back

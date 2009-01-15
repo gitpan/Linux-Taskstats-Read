@@ -1,5 +1,9 @@
 Revision history for Perl extension Linux::Taskstats::Read.
 
+7.00  Thu Jan 15 15:46:53 MDT 2009
+        - taskstats version 7 support added
+        - Auto detect version from file contents
+
 6.01  Tue Jun 10 17:32:05 MDT 2008
         - fix template for v4
 
